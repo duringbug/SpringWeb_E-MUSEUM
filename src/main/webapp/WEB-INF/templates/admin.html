@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script type="text/javascript" src="webjars/socket/4.4.1/socket.io.js">
+    // socket = new WebSocket("ws://1.15.222.76:9229/wsUrl", "echo");
+    // socket.onopen = function (event) {
+    //   let target = document.getElementById('responseText');
+    //   target.value = "Web Socket连接开启"
+    // }
+  </script>
+</head>
+<body>
+  <form action="/E-MUSEUM/upload2" enctype="multipart/form-data" method="post">
+    <input type="file" name="file" />
+    <button type="submit">上传</button>
+  </form>
+  <a href="upload/2.jpg" download="2.jpg">测试下载</a>
+  <textarea id="responseText"></textarea>
+  <a href="Comment">to Comment</a>
+</body>
+</html>

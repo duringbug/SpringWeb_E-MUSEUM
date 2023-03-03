@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+                           http://www.springframework.org/schema/context  http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/aop  http://www.springframework.org/schema/aop/spring-aop.xsd
+                           http://www.springframework.org/schema/tx  http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <context:property-placeholder location="classpath:jdbc.properties"/>
+    <!--DataSource:Spring的配置源替换Mybatis的配置-->
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="${local.driver}"/>
+        <property name="url" value="${local.url}"/>
+        <property name="username" value="${local.username}"/>
+        <property name="password" value="${local.password}"/>
+    </bean>
+    <!--SqlSessionFactory-->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="typeAliasesPackage" value="com.tjf.myBatis.project"/>
+        <property name="dataSource" ref="dataSource"/>
+        <!--        <property name="configLocation" value="classpath:mybatis-config.xml"/>-->
+        <property name="mapperLocations" value="classpath:com/tjf/myBatis/mapper/*.xml"/>
+        <!--        MyBatis的日志可以在SqlSessionFactoryBean的Bean配置中使用configuration属性的logImpl进行设置，配置示例如下：-->
+        <property name="configuration">
+            <bean class="org.apache.ibatis.session.Configuration">
+                <property name="logImpl" value="org.apache.ibatis.logging.log4j2.Log4j2Impl"/>
+            </bean>
+        </property>
+        <!--        别名留在mybatis-config.xml中-->
+        <!--        <property name="typeAliasesPackage" value="com.tjf.myBatis.project"/>-->
+    </bean>
+    <!--    配置sqlSessionTemplate-->
+    <bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+        <!--        sqlSessionTemplate只能用构造器注入-->
+        <constructor-arg index="0" ref="sqlSessionFactory"/>
+    </bean>
+
+
+    <!--    配置声明式事务-->
+    <bean id="dataSourceTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+    <!-- 方法一：用xml   结合AOP实现事务的植入:在Mapper层-->
+    <!--    1.配置事务的类:dataSourceTransactionManager(在Mapper层运用事务)-->
+    <tx:advice id="transactionInterceptor" transaction-manager="dataSourceTransactionManager">
+        <!--        2.给哪些方法配置事务-->
+        <!--        3.配置事务的传播特性:配置一个切面:propagation="REQUIRED"为默认-->
+        <tx:attributes>
+            <tx:method name="addUser" propagation="REQUIRED" isolation="REPEATABLE_READ"/>
+            <!--            mysql中默认REPEATABLE_READ-->
+            <tx:method name="updateUser" propagation="REQUIRED"/>
+            <tx:method name="deleteUser" propagation="REQUIRED"/>
+            <tx:method name="selectUser" read-only="true"/>
+            <!--            <tx:method name="*" propagation="REQUIRED"/>-->
+        </tx:attributes>
+    </tx:advice>
+    <!--    配置事务切入-->
+    <aop:config>
+        <aop:pointcut id="pc001" expression="execution(* com.tjf.myBatis.mapper.*.*(..))"/>
+        <aop:advisor advice-ref="transactionInterceptor" pointcut-ref="pc001"/>
+    </aop:config>
+    <!--方法二：  注解-->
+    <!--    开启事务注解在Service层-->
+    <tx:annotation-driven transaction-manager="dataSourceTransactionManager" mode="proxy" proxy-target-class="false"/>
+</beans>
