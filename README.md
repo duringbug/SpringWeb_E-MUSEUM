@@ -1,2 +1,5 @@
 # SpringWeb_E-MUSEUM
-## 这是spring的后端项目拷贝
+## 这是E-MUSEUM的后端项目拷贝
+### 1. Spring的SSM项目
+    2. MySQL
+    
