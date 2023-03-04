@@ -9,4 +9,5 @@ import com.tjf.myBatis.project.User;
  */
 public interface UserDao {
     User selectUser(int userId);
+    int initUser(User user);
 }

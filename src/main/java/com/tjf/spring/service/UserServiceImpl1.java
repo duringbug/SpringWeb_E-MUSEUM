@@ -42,4 +42,16 @@ public class UserServiceImpl1 implements UserService{
         LOGGER.info("用户:"+user.getUserid()+"查询自身基本信息");
         return user;
     }
+
+    @Override
+    public int initUser(User user) {
+        int result=userDao.initUser(user);
+        if(result==1){
+            LOGGER.info("用户:"+user.getUserid()+"完成注册");
+        }
+        else{
+            LOGGER.info("用户:"+user.getUserid()+"注册失败");
+        }
+        return result;
+    }
 }

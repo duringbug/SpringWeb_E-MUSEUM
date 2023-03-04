@@ -10,4 +10,5 @@ import com.tjf.myBatis.project.User;
  */
 public interface UserService {
     User selectUser(int userId);
+    int initUser(User user);
 }

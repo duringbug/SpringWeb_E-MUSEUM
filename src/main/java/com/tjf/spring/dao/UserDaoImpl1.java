@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
+import java.text.SimpleDateFormat;
+
 /**
  * @author 唐健峰
  * @version 1.0
@@ -37,5 +39,11 @@ public class UserDaoImpl1 implements UserDao{
     }
     public User selectUser(int userid){
         return userMapper.selectUserById(userid);
+    }
+
+    @Override
+    public int initUser(User user) {
+        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return userMapper.initUser(user.getUserid(), user.getUsername(), user.getPassword(), sdf.format(System.currentTimeMillis()),user.getUserQQmail());
     }
 }

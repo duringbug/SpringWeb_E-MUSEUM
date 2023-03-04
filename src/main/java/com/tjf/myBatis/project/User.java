@@ -18,6 +18,9 @@ public class User {
     private String username;
     @Nullable
     private String password;
+    /**
+     * 用户状态：在线或不在线
+     */
     @Nullable
     private int del_flg;
     @Nullable

@@ -24,4 +24,11 @@ public class UserMapperImpl1 implements UserMapper {
         userMapper=sqlSessionTemplate.getMapper(UserMapper.class);
         return userMapper.selectUserById(userId);
     }
+
+    @Override
+    public int initUser(int userid, String username, String password, String time, String userQQmail) {
+        userMapper=sqlSessionTemplate.getMapper(UserMapper.class);
+        return userMapper.initUser(userid,username,password,time,userQQmail);
+    }
+
 }
