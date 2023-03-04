@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>WebSocket</title>
+    <script type="text/javascript" src="webjars/socket/4.4.1/socket.io.js"></script>
+    <script type="text/javascript" src="webjars/jquery/3.5.1/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+
+        });
+        //加载websocket数据
+        function loadSocket() {
+            let ws = "";
+            if ("WebSocket" in window) {
+                ws = new WebSocket("ws://localhost:9229/E-MUSEUM/wsUrl");
+            } else {
+                ws = new SockJS("http://localhost:9229/E-MUSEUM/sockjs");
+            }
+            $('#text').append("开始建立连接...\n");
+            ws.onopen = function (event) {
+                $('#text').append("连接已建立..\n");
+                $('#text').append("发送测试数据..等待验证\n");
+                ws.send("666");
+            }
+            ws.onmessage = function (event) {
+                let msg = event.data;
+                $('#text').append(msg + "\n");
+            }
+            ws.onclose = function () {
+                $('#text').append("连接已关闭..\n");
+            }
+            ws.onerror = function () {
+                $('#text').append("发生了错误..\n");
+            }
+        }
+    </script>
+</head>
+<body>
+    <textarea rows="10" cols="100" style="background-color:silver;" id="text">
+        初始化完毕...
+    </textarea>
+    <input type="button" value="socket获取" onclick="loadSocket()" />
+</body>
+</html>
